@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NaveenMart Enterprise Capstone System</title>
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Global App Shell Container -->
+    <div id="app-root" class="min-h-screen flex flex-col justify-between">
+        
+        <!-- Main Header Segment Layout -->
+        <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="h-9 w-9 bg-indigo-600 rounded-lg flex items-center justify-center font-black tracking-wider shadow-md shadow-indigo-500/20">NM</div>
+                    <span class="font-extrabold text-xl tracking-tight text-white">NaveenMart <span class="text-xs font-medium text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded-full ml-1 bg-indigo-500/10">v2.1 Enterprise</span></span>
+                </div>
+                <div id="nav-session-ctx" class="flex items-center space-x-4">
+                    <!-- Session contexts dynamically mapped via layout controllers -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Context Master Injection Engine Portal Area -->
+        <main id="main-view-portal" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Programmatic dynamic screens append here -->
+        </main>
+
+        <!-- System Footer Context Stack Matrix -->
+        <footer class="border-t border-slate-800/60 bg-slate-950/30 py-4 text-center text-xs text-slate-500 font-mono tracking-wider">
+            Enterprise Architecture Capstone Platform // Database Driver: XML Embedded Node File System Stream Matrix
+        </footer>
+    </div>
+
+    <!-- Micro-Database Simulation Segment Vector Storage -->
+    <script id="xml-datastore" type="text/xml">
+    <naveenmart>
+        <users>
+            <user><id>USR-101</id><name>System Operator</name><email>admin@naveenmart.com</email><password>AdminPass123</password><role>Admin</role></user>
+            <user><id>USR-102</id><name>Apex Wholesale Corp</name><email>seller@naveenmart.com</email><password>SellerPass123</password><role>Seller</role></user>
+            <user><id>USR-103</id><name>Retail Consumer</name><email>buyer@naveenmart.com</email><password>BuyerPass123</password><role>Buyer</role></user>
+        </users>
+        <products>
+            <product><id>PROD-01</id><name>Enterprise Server Chassis</name><sellerId>USR-102</sellerId><price>1250.00</price><stock>14</stock></product>
+            <product><id>PROD-02</id><name>High-Speed Network Switch</name><sellerId>USR-102</sellerId><price>450.50</price><stock>32</stock></product>
+            <product><id>PROD-03</id><name>Fiber Optic Cable Patch Pack</name><sellerId>USR-102</sellerId><price>89.99</price><stock>5</stock></product>
+        </products>
+        <orders>
+            <order><id>ORD-9001</id><buyerId>USR-103</buyerId><productId>PROD-02</productId><qty>2</qty><total>901.00</total><status>Dispatched</status></order>
+        </orders>
+    </naveenmart>
+    </script>
+
+    <!-- CORE FRAMEWORK APPLICATION ENGINE RUNTIME IMPLEMENTATION MAP -->
+    <script>
+        // =========================================================================
+        // DOMAIN EXCEPTIONS (core/exceptions/*)
+        // =========================================================================
+        class AuthenticationException extends Error { constructor(msg) { super(msg); this.name = "AuthenticationException"; } }
+        class StockDepletedException extends Error { constructor(msg) { super(msg); this.name = "StockDepletedException"; } }
+        class UnauthorizedAccessException extends Error { constructor(msg) { super(msg); this.name = "UnauthorizedAccessException"; } }
+        class ValidationException extends Error { constructor(msg) { super(msg); this.name = "ValidationException"; } }
+
+        // =========================================================================
+        // DATA ACCESS MODELS ENTITY DEFAULTS (core/models/*)
+        // =========================================================================
+        class User { constructor(id, name, email, password, role) { this.id = id; this.name = name; this.email = email; this.password = password; this.role = role; } }
+        class Product { constructor(id, name, sellerId, price, stock) { this.id = id; this.name = name; this.sellerId = sellerId; this.price = parseFloat(price); this.stock = parseInt(stock); } }
+        class Order { constructor(id, buyerId, productId, qty, total, status = "Pending") { this.id = id; this.buyerId = buyerId; this.productId = productId; this.qty = parseInt(qty); this.total = parseFloat(total); this.status = status; } }
+
+        // =========================================================================
+        // EMBEDDED MEMORY REPOSITORIES SCHEMATIC (core/repositories/*)
+        // =========================================================================
+        class DataRepository {
+            constructor() {
+                this.userMap = new Map();
+                this.productMap = new Map();
+                this.orderMap = new Map();
+                this.bootstrapDatabase();
+            }
+
+            bootstrapDatabase() {
+                const xmlRaw = document.getElementById('xml-datastore').innerHTML;
+                const doc = new DOMParser().parseFromString(xmlRaw, "text/xml");
+                
+                // Parse out initial user blocks
+                const uNodes = doc.getElementsByTagName("user");
+                for (let i = 0; i < uNodes.length; i++) {
+                    const id = uNodes[i].getElementsByTagName("id")[0].textContent;
+                    const name = uNodes[i].getElementsByTagName("name")[0].textContent;
+                    const email = uNodes[i].getElementsByTagName("email")[0].textContent;
+                    const password = uNodes[i].getElementsByTagName("password")[0].textContent;
+                    const role = uNodes[i].getElementsByTagName("role")[0].textContent;
+                    this.userMap.set(id, new User(id, name, email, password, role));
+                }
+
+                // Parse out active products inventory listings
+                const pNodes = doc.getElementsByTagName("product");
+                for (let i = 0; i < pNodes.length; i++) {
+                    const id = pNodes[i].getElementsByTagName("id")[0].textContent;
+                    const name = pNodes[i].getElementsByTagName("name")[0].textContent;
+                    const sId = pNodes[i].getElementsByTagName("sellerId")[0].textContent;
+                    const price = pNodes[i].getElementsByTagName("price")[0].textContent;
+                    const stock = pNodes[i].getElementsByTagName("stock")[0].textContent;
+                    this.productMap.set(id, new Product(id, name, sId, price, stock));
+                }
+
+                // Parse transactions historical ledger mappings
+                const oNodes = doc.getElementsByTagName("order");
+                for (let i = 0; i < oNodes.length; i++) {
+                    const id = oNodes[i].getElementsByTagName("id")[0].textContent;
+                    const bId = oNodes[i].getElementsByTagName("buyerId")[0].textContent;
+                    const pId = oNodes[i].getElementsByTagName("productId")[0].textContent;
+                    const qty = oNodes[i].getElementsByTagName("qty")[0].textContent;
+                    const total = oNodes[i].getElementsByTagName("total")[0].textContent;
+                    const stat = oNodes[i].getElementsByTagName("status")[0].textContent;
+                    this.orderMap.set(id, new Order(id, bId, pId, qty, total, stat));
+                }
+            }
+
+            getUsers() { return Array.from(this.userMap.values()); }
+            getProducts() { return Array.from(this.productMap.values()); }
+            getOrders() { return Array.from(this.orderMap.values()); }
+            
+            saveUser(usr) { this.userMap.set(usr.id, usr); }
+            saveProduct(prod) { this.productMap.set(prod.id, prod); }
+            deleteProduct(pId) { this.productMap.delete(pId); }
+            saveOrder(ord) { this.orderMap.set(ord.id, ord); }
+        }
+
+        // Initialize state engine instance singleton securely
+        const DB = new DataRepository();
+
+        // =========================================================================
+        // BUSINESS CRITICAL SERVICES PRIVILEGES CORE (core/services/*)
+        // =========================================================================
+        class AuthService {
+            constructor() { this.session = null; }
+
+            login(email, pass) {
+                const uList = DB.getUsers();
+                for (let i = 0; i < uList.length; i++) {
+                    if (uList[i].email === email && uList[i].password === pass) {
+                        this.session = uList[i];
+                        return this.session;
+                    }
+                }
+                throw new AuthenticationException("Invalid security criteria matrix match.");
+            }
+
+            register(name, email, pass, role) {
+                if (!name || !email || !pass || !role) throw new ValidationException("Mandatory registration inputs cannot verify null boundaries.");
+                
+                const uList = DB.getUsers();
+                for (let i = 0; i < uList.length; i++) {
+                    if (uList[i].email === email) throw new ValidationException("Target account registration matrix identifier conflicts: Email exists.");
